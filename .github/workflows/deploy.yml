@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: ./respire/ # Ajuste se sua pasta na Hostinger for diferente (ex: ./ ou ./site/)
+          server-dir: ./ # Ajuste se sua pasta na Hostinger for diferente (ex: ./ ou ./site/)
           protocol: ftps
           exclude: |
             **/.git*
