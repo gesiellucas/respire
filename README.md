@@ -27,8 +27,8 @@ Siga os passos abaixo para rodar a aplicação em seu ambiente local:
 
 1. **Clone o repositório:**
    ```bash
-   git clone <URL_DO_SEU_REPOSITORIO>
-   cd conscious-breathing-app
+   git clone [<URL_DO_SEU_REPOSITORIO>](https://github.com/gesiellucas/respire)
+   cd respire
    ```
 
 2. **Instale as dependências:**
@@ -43,7 +43,7 @@ Siga os passos abaixo para rodar a aplicação em seu ambiente local:
    ```
 
 4. **Acesse a aplicação:**
-   Abra o seu navegador e acesse o endereço indicado no terminal (geralmente `http://localhost:5173`).
+   Abra o seu navegador e acesse o endereço indicado no terminal (geralmente `http://localhost:3000`).
 
 ## ⚙️ Scripts Disponíveis
 
