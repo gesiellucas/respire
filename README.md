@@ -1,5 +1,7 @@
 # Respiração Consciente (Conscious Breathing App)
 
+![Cover Image](public/cover_image.png)
+
 Uma aplicação web moderna e interativa projetada para auxiliar na prática de exercícios de respiração guiada. O objetivo é ajudar os usuários a encontrar paz interior, reduzir o estresse e melhorar o foco através de técnicas de respiração controlada.
 
 ## 🌟 Funcionalidades
