@@ -18,6 +18,8 @@ const App: React.FC = () => {
   const [stats, setStats] = useState<Stats>({ cycles: 0, elapsedTime: 0, breaths: 0 });
   const [phaseProgress, setPhaseProgress] = useState<number>(0);
 
+  const [isStatsOpen, setIsStatsOpen] = useState(false);
+
   const { initialize: initializeAudio, playSound } = useAudio();
   const audioInitialized = useRef(false);
 
@@ -128,25 +130,83 @@ const App: React.FC = () => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
-  return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full max-w-6xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
-          Respiração Consciente
-        </h1>
-        <p className="text-gray-500 text-sm">Encontre paz interior através da respiração guiada</p>
-      </div>
+  const formatTime = (totalSeconds: number): string => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
 
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
-        <BreathingVisualizer phase={currentPhase} timeLeft={timeLeft} stats={stats} progress={phaseProgress} />
-        <ControlsPanel
-          settings={settings}
-          onSettingsChange={handleSettingsChange}
-          isRunning={isRunning}
-          onStart={handleStart}
-          onStop={handleStop}
-        />
-      </div>
+  const StatItem: React.FC<{ label: string; value: string | number; icon?: string }> = ({ label, value, icon }) => (
+    <div className="flex flex-col items-center bg-white/50 backdrop-blur-sm rounded-xl p-3 min-w-[100px] shadow-sm border border-white/20">
+      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</span>
+      <span className="text-xl font-bold text-gray-800 flex items-center gap-1">
+        {icon && <span className="text-base">{icon}</span>}
+        {value}
+      </span>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6 font-sans text-gray-900">
+      <div className="max-w-4xl mx-auto">
+        {/* Header with Title and Stats */}
+        <header className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/50">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-1">
+              Respiração Consciente
+            </h1>
+            <p className="text-gray-500 font-medium">Encontre sua paz interior</p>
+          </div>
+
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <button
+              onClick={() => setIsStatsOpen(!isStatsOpen)}
+              className="md:hidden flex items-center gap-2 px-4 py-2 bg-white/50 rounded-lg text-sm font-medium text-gray-600 hover:bg-white/80 transition-all"
+            >
+              <span>{isStatsOpen ? '▼' : '▶'}</span> Estatísticas
+            </button>
+            <div className={`flex-wrap justify-center gap-3 transition-all duration-300 ease-in-out ${isStatsOpen ? 'flex opacity-100 max-h-96' : 'hidden opacity-0 max-h-0'} md:flex md:opacity-100 md:max-h-full`}>
+              <StatItem label="Tempo Restante" value={formatTime(timeLeft)} icon="⏳" />
+              <StatItem label="Ciclos" value={stats.cycles} icon="🔄" />
+              <StatItem label="Tempo Total" value={`${Math.floor(stats.elapsedTime / 60)}m`} icon="⏱️" />
+              <StatItem label="Respirações" value={stats.breaths} icon="🌬️" />
+            </div>
+          </div>
+        </header>
+
+        <main className="flex flex-col items-center gap-10">
+          {/* Controls - Start/Stop Buttons */}
+          <div className="flex gap-4 w-full max-w-md">
+            <button
+              onClick={handleStart}
+              disabled={isRunning}
+              className="flex-1 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            >
+              <span className="text-xl">▶️</span> Iniciar
+            </button>
+            <button
+              onClick={handleStop}
+              disabled={!isRunning}
+              className="flex-1 py-4 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            >
+              <span className="text-xl">⏹️</span> Parar
+            </button>
+          </div>
+
+          {/* Visualizer */}
+          <div className="bg-white/40 backdrop-blur-sm p-8 rounded-full shadow-2xl border border-white/50">
+            <BreathingVisualizer phase={currentPhase} stats={stats} progress={phaseProgress} />
+          </div>
+
+          {/* Settings Accordion */}
+          <div className="w-full max-w-2xl">
+            <ControlsPanel
+              settings={settings}
+              onSettingsChange={handleSettingsChange}
+              isRunning={isRunning}
+            />
+          </div>
+        </main>
       
       <footer className="mt-12 pt-8 border-t border-gray-100">
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all hover:shadow-md">
@@ -172,6 +232,7 @@ const App: React.FC = () => {
           </a>
         </div>
       </footer>
+      </div>
     </div>
   );
 };

@@ -4,7 +4,6 @@ import { Phase, Stats } from '../types';
 
 interface BreathingVisualizerProps {
   phase: Phase;
-  timeLeft: number;
   stats: Stats;
   progress: number;
 }
@@ -30,7 +29,7 @@ const formatTime = (totalSeconds: number): string => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-export const BreathingVisualizer: React.FC<BreathingVisualizerProps> = ({ phase, timeLeft, stats, progress }) => {
+export const BreathingVisualizer: React.FC<BreathingVisualizerProps> = ({ phase, stats, progress }) => {
   const { text, description, gradient, scale, innerScale } = phaseMap[phase];
   const circumference = 2 * Math.PI * 130;
   const offset = circumference - progress * circumference;
@@ -72,19 +71,6 @@ export const BreathingVisualizer: React.FC<BreathingVisualizerProps> = ({ phase,
       <div className="text-center space-y-2 w-full">
         <p className={`text-2xl font-semibold text-gray-800 ${phase !== Phase.IDLE && 'breathing-text'}`}>{text}</p>
         <p className="text-sm text-gray-500 min-h-[20px]">{description}</p>
-      </div>
-
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 w-full max-w-sm mx-auto">
-        <p className="text-sm font-medium text-gray-600 text-center mb-1">Tempo Restante</p>
-        <p className="text-5xl font-bold text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          {formatTime(timeLeft)}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3 w-full max-w-sm mx-auto">
-        <StatCard value={stats.cycles} label="Ciclos" />
-        <StatCard value={`${Math.floor(stats.elapsedTime / 60)}m`} label="Tempo" />
-        <StatCard value={stats.breaths} label="Respirações" />
       </div>
     </div>
   );
